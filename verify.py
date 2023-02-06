@@ -12,8 +12,9 @@ def extract_string(string, comp_pass):
     return string[beg:end]
 
 
-def process_file(file_path, a, debug, comp_pass):
-    result = subprocess.run(["python", f'{a}/compiler.py', file_path], capture_output=True, text=True)
+def process_file(file_path, local, debug, comp_pass):
+    result = subprocess.run(["python", f'{local}/compiler.py', file_path], capture_output=True, text=True)
+    
     my_output = result.stdout 
     local = extract_string(my_output, comp_pass)
     
@@ -51,15 +52,24 @@ def process_file(file_path, a, debug, comp_pass):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("file_or_dir", help="Python File or directory to process")
-    parser.add_argument("assign", help="Use the online compiler from assignment x, ex: a2")
+    parser.add_argument("comp", help="Use the compiler from assignment x, ex: a2")
     parser.add_argument("-v", "--verify", help="Specify a pass to verify | rco | si | ah | pi | pc |", nargs=1, metavar='pass_name')
+    parser.add_argument("-l", "--local", help="Specify a local compiler to use", nargs=1, metavar='local_comp')
     parser.add_argument("-d", "--debug", help="Activate debug output", action="store_true")
 
     args = parser.parse_args()
 
-    url = f'https://jnear.w3.uvm.edu/cs202/compiler-{args.assign}.php'
+    comp = args.comp
+    local = comp
+    
+    if (args.local):
+        local = args.local[0]
+
+    print("Using online compiler:", comp)
+    print("Using local compiler:", local)
+        
+    url = f'https://jnear.w3.uvm.edu/cs202/compiler-{comp}.php'
     file_or_dir = args.file_or_dir
-    assign = args.assign
     debug = args.debug
     comp_pass = "prelude"
     passes = {"rco": "remove complex opera", "si": "select instructions", "ah": "assign homes", \
@@ -74,12 +84,12 @@ if __name__ == "__main__":
         if not file_or_dir.endswith(".py"):
            print("File must end with .py") 
         else:
-            process_file(file_or_dir, assign, debug, comp_pass)
+            process_file(file_or_dir, local, debug, comp_pass)
     elif os.path.isdir(file_or_dir):
         for root, dirs, files in os.walk(file_or_dir):
             for filename in files:
                 file_path = os.path.join(root, filename)
                 if file_path.endswith(".py"):
-                    process_file(file_path, assign, debug, comp_pass)
+                    process_file(file_path, local, debug, comp_pass)
     else:
         print(f"Error: {file_or_dir} is not a file or directory")
