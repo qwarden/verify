@@ -53,7 +53,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("file_or_dir", help="Python File or directory to process")
     parser.add_argument("comp", help="Use the compiler from assignment x, ex: a2")
-    parser.add_argument("-v", "--verify", help="Specify a pass to verify | rco | si | ah | pi | pc |", nargs=1, metavar='pass_name')
+    parser.add_argument("-v", "--verify", help="Specify a pass to verify | rco | si | ar | pi | pc |", nargs=1, metavar='pass_name')
     parser.add_argument("-l", "--local", help="Specify a local compiler to use", nargs=1, metavar='local_comp')
     parser.add_argument("-d", "--debug", help="Activate debug output", action="store_true")
 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     file_or_dir = args.file_or_dir
     debug = args.debug
     comp_pass = "prelude"
-    passes = {"rco": "remove complex opera", "si": "select instructions", "ah": "assign homes", \
+    passes = {"rco": "remove complex opera", "si": "select instructions", "ar": "allocate registers", \
             "pi": "patch instructions", "pc": "prelude & conclusion"}
  
     if args.verify:
